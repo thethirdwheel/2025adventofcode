@@ -14,35 +14,35 @@ def load_problems(file):
                 i = i + 1
     return problems
 
-
-def construct_problem(start, end, chararray):
-    for i in range(end, start-1, -1):
-        for j in range(len(chararray)-1, -1, -1):
-            cur_string = concat[0:-2][i]
-
-
-
-
-
-
 def load_problems2(file):
     chararray = []
     with open(file, "r") as f:
         for line in f:
             chararray.append(list(line))
-    operator = chararray[-1][0] # get the operator for the first problem
-    operator_pos = 0
-    i = 1
-    for i in range(1, len(chararray[-1])):
-        if chararray[-1][i] != " ":
-            #we've reached the end of the current problem
-            #the first number starts two columns back (current column, space separator column)
-            construct_problem(operator_pos, i-2, chararray)
-        
-            
+    transposed_chararray = [list(row) for row in zip(*chararray)]
+    transposed_chararray.reverse()
+    return transposed_chararray
 
+def translate_problems2(chararray):
+    problems = []
+    vals = []
+    for line in chararray:
+        val = "".join(line[0:len(line)-1]).strip()
+        if val != "":
+            vals.append(val)
+        operator = line[len(line)-1]
+        if operator in "*+":
+            calc = operator.join(vals)
+            problems.append(calc)
+            operator = ""
+            vals = []
+    return problems
 
-
+def eval_and_sum(problems):
+    sum = 0
+    for p in problems:
+        sum = sum + eval(p)
+    return sum
 
 def calc_problem(problem):
     #expecting an array with last value as operator
@@ -59,6 +59,10 @@ def main():
     problems= load_problems("inputs/day6_input.txt")
     total = sum_problems(problems)
     print(f"Problem answers sum up to {total}")
+    problems2 = load_problems2("inputs/day6_input.txt")
+    translated_problems = translate_problems2(problems2)
+    total2 = eval_and_sum(translated_problems)
+    print(f"Second interpretation answers sum up to {total2}")
 
 if __name__ == "__main__":
     main()
