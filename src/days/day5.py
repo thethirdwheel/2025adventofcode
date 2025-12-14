@@ -17,10 +17,9 @@ def check_range(id, rng):
     return False
 
 def can_merge(rstart, rend, fstart, fend):
-    mergeable = False
-    if (rstart >= fstart and rstart <= fend) or (rend >= fstart and rend <= fend):
-        mergeable = True
-    return mergeable
+    # Two ranges [rstart, rend] and [fstart, fend] overlap if:
+    # rstart <= fend AND rend >= fstart
+    return rstart <= fend and rend >= fstart
 
 def merge(rstart, rend, fstart, fend):
     assert(can_merge(rstart, rend, fstart, fend))
@@ -30,7 +29,11 @@ def merge(rstart, rend, fstart, fend):
 
 def get_range_start_end(rng):
     splitr = rng.split("-")
-    return int(splitr[0]), int(splitr[1])
+    s = int(splitr[0])
+    e = int(splitr[1])
+    if s > e:
+        print(f"the fuck is this range {rng}")
+    return s, e
 
 def merge_ranges(ranges): 
     final_ranges = []

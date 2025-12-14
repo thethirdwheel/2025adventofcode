@@ -1,5 +1,5 @@
-from days.day5 import can_merge, merge, get_range_start_end, load_freshness_db, count_fresh_ids, merge_ranges, count_ids_in_ranges, get_fresh_ids, get_containing_ranges
-
+from days.day5 import can_merge, merge,  load_freshness_db, count_fresh_ids, merge_ranges, count_ids_in_ranges, get_fresh_ids, get_containing_ranges
+import random
 
 def test_count_ids_in_ranges():
     r = ["1-1"]
@@ -27,6 +27,15 @@ def test_merge():
     ms, me = merge(9, 11, 9, 11)
     assert ms == 9
     assert me == 11
+    assert can_merge(1, 10, 2, 5)
+    ms, me = merge(1, 10, 2, 5)
+    assert ms == 1
+    assert me == 10
+    assert can_merge(2, 5, 1, 10)
+    ms, me = merge(2, 5, 1, 10)
+    assert ms == 1
+    assert me == 10
+
 
 def test_on_test_input():
     file = "inputs/day5_test_input.txt"
@@ -40,7 +49,17 @@ def test_on_full_input():
     file = "inputs/day5_input.txt"
     fresh, available = load_freshness_db(file)
     count = count_fresh_ids(available, fresh)
+    fresh2 = merge_ranges(fresh)
+    count2 = count_fresh_ids(available, fresh2)
     assert count == 623
+    assert count == count2
+    random.shuffle(fresh)
+    fresh2 = merge_ranges(fresh)
+    count_shuffled = count_fresh_ids(available, fresh)
+    count2_shuffled = count_fresh_ids(available, fresh2)
+    assert count_shuffled == 623
+    assert count_shuffled == count2_shuffled
+
 
 def test_merge_ranges_complete():
     file = "inputs/day5_input.txt"
